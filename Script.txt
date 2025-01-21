@@ -1,0 +1,24 @@
+let
+    body = "{""login"" : ""<seu_login>"",""password"" : ""<sua_senha>""}",
+    getToken = Json.Document(
+        Web.Contents(
+            "<url_da_api_de_login>",
+            [
+                Headers = [#"Content-Type" = "application/json"],
+                Content = Text.ToBinary(body)
+            ]
+        )
+    ),
+    data = getToken[data],
+    token = data[accessToken],
+    authToken = "bearer " & token,
+    results = Json.Document(
+        Web.Contents(
+            "<url_da_api_do_relatorio>",
+            [
+                Headers = [Authorization = authToken]
+            ]
+        )
+    )
+in
+    results[data]
